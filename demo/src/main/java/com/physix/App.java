@@ -1,5 +1,7 @@
 package com.physix;
 
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -9,6 +11,7 @@ import com.physix.classes.Blocks;
 import com.physix.utils.Utility;
 
 public class App {
+
     // Create the frame
     public static JFrame frame = new JFrame("PhysiX");
     // Create the menu bar
@@ -18,10 +21,13 @@ public class App {
     public static JMenu menu1 = new JMenu("Files");
     public static JMenu menu2 = new JMenu("Options");
     public static JMenu menu3 = new JMenu("Help");
+    public static JMenu menu2x = new JMenu("Edit");
     // Create menu items for Menu 1
     public static JMenuItem menuItem1_1 = new JMenuItem("New");
     public static JMenuItem menuItem1_2 = new JMenuItem("Save");
     public static JMenuItem menuItem1_3 = new JMenuItem("Open");
+    // Create menu items for Menu 2x
+    public static JMenuItem menuItem2x_1 = new JMenuItem("Show Edit Frame");
     // Create menu items for Menu 2
     // JMenuItem menuItem2_1 = new JMenuItem("Option 1");
     public static JMenuItem menuItem2_2 = new JMenuItem("Run");
@@ -46,6 +52,8 @@ public class App {
         menu1.add(menuItem1_2);
         menu1.add(menuItem1_3);
 
+        menu2x.add(menuItem2x_1);
+
         subMenu2_1.add(subMenuItem2_1_1);
         subMenu2_1.add(subMenuItem2_1_2);
         subMenu2_1.add(subMenuItem2_1_3);
@@ -60,6 +68,7 @@ public class App {
 
         // Add menus to the menu bar
         menuBar.add(menu1);
+        menuBar.add(menu2x);
         menuBar.add(menu2);
         menuBar.add(menu3);
 
@@ -76,149 +85,286 @@ public class App {
                 super.paintComponent(g);
                 // Custom drawing code here
 
-                // Example drawing code
-             /*   java.awt.Graphics2D g2d = (java.awt.Graphics2D) g;
-                java.awt.Image img = new javax.swing.ImageIcon("path/to/your/image.png").getImage();
-                g2d.drawImage(img, 0, 0, this);*/
-
             }
         };
-
+       
         // Add the drawing panel to the frame
         frame.add(drawPanel);
-        subMenuItem2_1_1.addActionListener(e -> {
-            JFrame popUpFrame = new JFrame("Input Blocks");
-            popUpFrame.setSize(300, 200);
-            popUpFrame.setLayout(new java.awt.GridLayout(5, 2));
+        menuItem2x_1.addActionListener(e -> {
+            JFrame popUpFrame = new JFrame("Edit Items");
+            popUpFrame.setSize(300, 500);
+            javax.swing.JTabbedPane tabbedPane = new javax.swing.JTabbedPane();
 
-            popUpFrame.add(new javax.swing.JLabel("Input 1:"));
-            javax.swing.JTextField input1 = new javax.swing.JTextField();
-            popUpFrame.add(input1);
+            javax.swing.JPanel tab1 = new javax.swing.JPanel();
+            javax.swing.JPanel tab2 = new javax.swing.JPanel();
 
-            popUpFrame.add(new javax.swing.JLabel("Input 2:"));
-            javax.swing.JTextField input2 = new javax.swing.JTextField();
-            popUpFrame.add(input2);
-
-            popUpFrame.add(new javax.swing.JLabel("Input 3:"));
-            javax.swing.JTextField input3 = new javax.swing.JTextField();
-            popUpFrame.add(input3);
-
-            popUpFrame.add(new javax.swing.JLabel("Input 4:"));
-            javax.swing.JTextField input4 = new javax.swing.JTextField();
-            popUpFrame.add(input4);
-
-            javax.swing.JButton submitButton = new javax.swing.JButton("Submit");
-            popUpFrame.add(submitButton);
-            popUpFrame.setLocationRelativeTo(frame);
-            submitButton.addActionListener(event -> {
-                String input1Text = input1.getText();
-                String input2Text = input2.getText();
-                String input3Text = input3.getText();
-                String input4Text = input4.getText();
-
-                if (input1Text.isEmpty() || input2Text.isEmpty() || input3Text.isEmpty() || input4Text.isEmpty()) {
-                    javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All fields must be filled.", "Input Error",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
-
-                    return;
+            javax.swing.JButton button1 = new javax.swing.JButton("New");
+            javax.swing.JButton button2 = new javax.swing.JButton("Edit");
+            button2.setEnabled(false);
+            javax.swing.JButton button3 = new javax.swing.JButton("Delete");
+            button3.setEnabled(false);
+            javax.swing.DefaultListModel<String> listModel = new javax.swing.DefaultListModel<>();
+            for (Blocks block : blk) {
+                listModel.addElement(block.getName());
+            }
+           javax.swing.JList<String> list = new javax.swing.JList<>(listModel);
+            listModel.addListDataListener(new javax.swing.event.ListDataListener() {
+                @Override
+                public void intervalAdded(javax.swing.event.ListDataEvent e) {
+                    list.updateUI();
                 }
 
-                try {
-                    int m = Integer.parseInt(input1Text);
-                    int v = Integer.parseInt(input2Text);
-                    int f1 = Integer.parseInt(input3Text);
-                    int f2 = Integer.parseInt(input4Text);
+                @Override
+                public void intervalRemoved(javax.swing.event.ListDataEvent e) {
+                    list.updateUI();
+                }
 
-                    if (m < 0 || v < 0 || f1 < 0 || f2 < 0) {
-                        javax.swing.JOptionPane.showMessageDialog(popUpFrame, "Values must be non-negative.",
-                                "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                @Override
+                public void contentsChanged(javax.swing.event.ListDataEvent e) {
+                    list.updateUI();
+                }
+            });
+            button2.addActionListener(e2 -> {
+                int selectedIndex = list.getSelectedIndex();
+                Blocks selectedBlock = blk.get(selectedIndex);
+                JFrame popUpFrame2 = new JFrame("Edit Block");
+                popUpFrame2.setSize(300, 200);
+                popUpFrame2.setLayout(new java.awt.GridLayout(6, 2));
+
+                popUpFrame2.add(new javax.swing.JLabel("Mass:"));
+                javax.swing.JTextField input1 = new javax.swing.JTextField();
+                input1.setText(String.valueOf(selectedBlock.getMass()));
+                popUpFrame2.add(input1);
+
+                popUpFrame2.add(new javax.swing.JLabel("Velocity:"));
+                javax.swing.JTextField input2 = new javax.swing.JTextField();
+                input2.setText(String.valueOf(selectedBlock.getVelocity()));
+                popUpFrame2.add(input2);
+
+                popUpFrame2.add(new javax.swing.JLabel("Acceleration:"));
+                javax.swing.JTextField input3 = new javax.swing.JTextField();
+                input3.setText(String.valueOf(selectedBlock.getAcceleration()));
+                popUpFrame2.add(input3);
+
+                popUpFrame2.add(new javax.swing.JLabel("Jerk:"));
+                javax.swing.JTextField input4 = new javax.swing.JTextField();
+                input4.setText(String.valueOf(selectedBlock.getJerk()));
+                popUpFrame2.add(input4);
+
+                popUpFrame2.add(new javax.swing.JLabel("Name:"));
+                javax.swing.JTextField input5 = new javax.swing.JTextField();
+                input5.setText(selectedBlock.getName());
+                popUpFrame2.add(input5);
+
+                javax.swing.JButton submitButton = new javax.swing.JButton("Submit");
+                popUpFrame2.add(submitButton);
+                popUpFrame2.setLocationRelativeTo(frame);
+                submitButton.addActionListener(event -> {
+                    String input1Text = input1.getText();
+                    String input2Text = input2.getText();
+                    String input3Text = input3.getText();
+                    String input4Text = input4.getText();
+
+                    if (input1Text.isEmpty() || input2Text.isEmpty() || input3Text.isEmpty() || input4Text.isEmpty()) {
+                        javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All fields must be filled.",
+                                "Input Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
 
                         return;
                     }
 
+                    try {
+                        int m = Integer.parseInt(input1Text);
+                        int v = Integer.parseInt(input2Text);
+                        int f1 = Integer.parseInt(input3Text);
+                        int f2 = Integer.parseInt(input4Text);
+
+                        if (m < 0 || v < 0 || f1 < 0 || f2 < 0) {
+                            javax.swing.JOptionPane.showMessageDialog(popUpFrame, "Values must be non-negative.",
+                                    "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+
+                            return;
+                        }
+
+                        // Handle the input values here
+                        popUpFrame2.dispose();
+                    } catch (NumberFormatException ex) {
+                        javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All inputs must be numeric.",
+                                "Input Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+
+                    }
+
                     // Handle the input values here
-                    popUpFrame.dispose();
-                } catch (NumberFormatException ex) {
-                    javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All inputs must be numeric.", "Input Error",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                    int m = Integer.parseInt(input1.getText());
+                    int v = Integer.parseInt(input2.getText());
+                    int f1 = Integer.parseInt(input3.getText());
+                    int f2 = Integer.parseInt(input4.getText());
+                    // System.out.println("Mass: " + m);
+                    // Process the values as needed
+                    popUpFrame2.dispose();
+                    Blocks newBlock = U.newBlock(m, v, f1, f2, blk.get(selectedIndex).getName());
+                    moveBlock(newBlock, drawPanel, drawPanel.getGraphics());
+                    blk.set(selectedIndex, newBlock);
+                    listModel.set(selectedIndex, newBlock.getName());
 
-                }
-
-                // Handle the input values here
-                int m = Integer.parseInt(input1.getText());
-                int v = Integer.parseInt(input2.getText());
-                int f1 = Integer.parseInt(input3.getText());
-                int f2 = Integer.parseInt(input4.getText());
-                // System.out.println("Mass: " + m);
-                // Process the values as needed
-                popUpFrame.dispose();
-                blk[blksum] = U.newBlock(m, v, f1, f2);
-                blk[blksum].print();
-                blk[blksum].importPicture();
-                moveBlock(blk[blksum].getBlockImage(), drawPanel, drawPanel.getGraphics());
-                blksum++;
+                    Utility.rePaint(blk, blk.size(), (java.awt.Graphics2D) drawPanel.getGraphics(), drawPanel);
+                });
+                popUpFrame2.setLocationRelativeTo(frame);
+                popUpFrame2.setVisible(true);
             });
+            button3.addActionListener(e2 -> {
+                    int confirm = javax.swing.JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete this block?", "Confirm Delete", javax.swing.JOptionPane.YES_NO_OPTION);
+                    if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                    int selectedIndex = list.getSelectedIndex();
+                    blk.remove(selectedIndex);
+                    listModel.remove(selectedIndex);
+                    Utility.rePaint(blk, blk.size(), (java.awt.Graphics2D) drawPanel.getGraphics(), drawPanel);
+                });
+            list.addListSelectionListener(e1 -> {
+                boolean isSelection = !list.isSelectionEmpty();
+                button2.setEnabled(true);
+                button3.setEnabled(true);
+                if (isSelection) {
+                    int selectedIndex = list.getSelectedIndex();
+                    Blocks selectedBlock = blk.get(selectedIndex);
+                    selectedBlock.print();
+                }
+                
+            });
+            tab1.setLayout(new java.awt.BorderLayout());
 
+            javax.swing.JPanel buttonPanel = new javax.swing.JPanel();
+            buttonPanel.setLayout(new java.awt.GridLayout(1, 3));
+            buttonPanel.add(button1);
+            buttonPanel.add(button2);
+            buttonPanel.add(button3);
+
+            tab1.add(buttonPanel, java.awt.BorderLayout.NORTH);
+            tab1.add(new javax.swing.JScrollPane(list), java.awt.BorderLayout.CENTER);
+
+            tabbedPane.addTab("Blocks", tab1);
+            tabbedPane.addTab("Tab 2", tab2);
+
+            button1.addActionListener(e1 -> {
+                JFrame popUpFrame1 = new JFrame("Input Blocks");
+                popUpFrame1.setSize(300, 200);
+                popUpFrame1.setLayout(new java.awt.GridLayout(5, 2));
+
+                popUpFrame1.add(new javax.swing.JLabel("Mass:"));
+                javax.swing.JTextField input1 = new javax.swing.JTextField();
+                popUpFrame1.add(input1);
+
+                popUpFrame1.add(new javax.swing.JLabel("Velocity:"));
+                javax.swing.JTextField input2 = new javax.swing.JTextField();
+                popUpFrame1.add(input2);
+
+                popUpFrame1.add(new javax.swing.JLabel("Acceleration:"));
+                javax.swing.JTextField input3 = new javax.swing.JTextField();
+                popUpFrame1.add(input3);
+
+                popUpFrame1.add(new javax.swing.JLabel("Jerk:"));
+                javax.swing.JTextField input4 = new javax.swing.JTextField();
+                popUpFrame1.add(input4);
+
+                javax.swing.JButton submitButton = new javax.swing.JButton("Submit");
+                popUpFrame1.add(submitButton);
+                popUpFrame1.setLocationRelativeTo(frame);
+                submitButton.addActionListener(event -> {
+                    String input1Text = input1.getText();
+                    String input2Text = input2.getText();
+                    String input3Text = input3.getText();
+                    String input4Text = input4.getText();
+
+                    if (input1Text.isEmpty() || input2Text.isEmpty() || input3Text.isEmpty() || input4Text.isEmpty()) {
+                        javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All fields must be filled.",
+                                "Input Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+
+                        return;
+                    }
+
+                    try {
+                        int m = Integer.parseInt(input1Text);
+                        int v = Integer.parseInt(input2Text);
+                        int f1 = Integer.parseInt(input3Text);
+                        int f2 = Integer.parseInt(input4Text);
+
+                        if (m < 0 || v < 0 || f1 < 0 || f2 < 0) {
+                            javax.swing.JOptionPane.showMessageDialog(popUpFrame, "Values must be non-negative.",
+                                    "Input Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+
+                            return;
+                        }
+
+                        // Handle the input values here
+                        popUpFrame1.dispose();
+                    } catch (NumberFormatException ex) {
+                        javax.swing.JOptionPane.showMessageDialog(popUpFrame, "All inputs must be numeric.",
+                                "Input Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+
+                    }
+
+                    // Handle the input values here
+                    int m = Integer.parseInt(input1.getText());
+                    int v = Integer.parseInt(input2.getText());
+                    int f1 = Integer.parseInt(input3.getText());
+                    int f2 = Integer.parseInt(input4.getText());
+                    // System.out.println("Mass: " + m);
+                    // Process the values as needed
+                    popUpFrame1.dispose();
+                    Blocks newBlock = U.newBlock(m, v, f1, f2, "Block " + blk.size());
+                    blk.add(newBlock);
+                    newBlock.print();
+                    moveBlock(newBlock, drawPanel, drawPanel.getGraphics());
+                    listModel.addElement(newBlock.getName());
+                });
+                
+                popUpFrame1.setLocationRelativeTo(frame);
+                popUpFrame1.setVisible(true);
+            });
+            popUpFrame.add(tabbedPane);
+            popUpFrame.setLocationRelativeTo(frame);
             popUpFrame.setVisible(true);
-
         });
-
-        blksum = 0;
 
     }
 
     public static Utility U = new Utility();
-    public static int blksum;
-    public static Blocks[] blk = new Blocks[1000];
+  
+    public static ArrayList<Blocks> blk = new ArrayList<>();
 
-    public static void moveBlock(/*Blocks b*/java.awt.Image img, javax.swing.JPanel p, java.awt.Graphics g) {
+    public static void moveBlock(Blocks b, javax.swing.JPanel p, java.awt.Graphics g) {
         // move block
         // Example drawing code
         java.awt.Graphics2D g2d = (java.awt.Graphics2D) g;
-      //  b.importPicture();
-      //  java.awt.Image img = b.getBlockImage();
-    p.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-        @Override
-        public void mouseMoved(java.awt.event.MouseEvent e) {
-        g2d.clearRect(0, 0, p.getWidth(), p.getHeight());
-        for (int i = 0; i < blksum; i++) {
-            g2d.drawImage(blk[i].getBlockImage(), blk[i].getX(), blk[i].getY(), p);
-        }
-        g2d.drawImage(img, e.getX(), e.getY(), p);
-        }
-    });
-    p.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mousePressed(java.awt.event.MouseEvent e) {
-        if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) { // Right-click
-            g2d.clearRect(0, 0, p.getWidth(), p.getHeight());
-            for (int i = 0; i < blksum; i++) {
-            g2d.drawImage(blk[i].getBlockImage(), blk[i].getX(), blk[i].getY(), p);
-            }
-            g2d.drawImage(img, e.getX(), e.getY(), p);
-            p.removeMouseMotionListener(p.getMouseMotionListeners()[0]);
-            p.removeMouseListener(p.getMouseListeners()[0]);
-        }
-        }
-    });
-      /*/  p.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+
+        java.awt.Image img = b.getBlockImage();
+        p.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
-            g2d.clearRect(0, 0, p.getWidth(), p.getHeight());
-            g2d.drawImage(img, e.getX(), e.getY(), p);
+                b.setX(e.getX());
+                b.setY(e.getY());
+                Utility.rePaint(blk, blk.size(), g2d, p);
+                g2d.drawImage(img, e.getX() - 14, e.getY() - 27, p);
             }
         });
         p.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-            if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) { // Right-click
-                g2d.clearRect(0, 0, p.getWidth(), p.getHeight());
-                g2d.drawImage(img, e.getX(), e.getY(), p);
-                p.removeMouseMotionListener(p.getMouseMotionListeners()[0]);
-                p.removeMouseListener(p.getMouseListeners()[0]);
+                if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) { // Right-click
+                    Utility.rePaint(blk, blk.size(), g2d, p);
+                    g2d.drawImage(img, e.getX() - 14, e.getY() - 27, p);
+                    b.setX(e.getX());
+                    b.setY(e.getY());
+                    p.removeMouseMotionListener(p.getMouseMotionListeners()[0]);
+                    p.removeMouseListener(p.getMouseListeners()[0]);
+                }
             }
-            }
-        });*/
-        //g2d.drawImage(img, 0, 0, p);
+        });
+
     }
 }
