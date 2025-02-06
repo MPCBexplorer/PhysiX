@@ -1,5 +1,4 @@
 # PhysiX Demo
-
 欢迎来到 PhysiX Demo 项目！
 
 ## 项目简介
@@ -48,6 +47,6 @@ npm start
 
 ## 许可证
 
-该项目基于 MIT 许可证开源。详情请参阅 [LICENSE](LICENSE) 文件。
+该项目基于 Apache 2.0 许可证开源。详情请参阅 [LICENSE](https://github.com/MPCBexplorer/PhysiX/blob/main/LICENSE) 文件。
 
 感谢您的使用和支持！
